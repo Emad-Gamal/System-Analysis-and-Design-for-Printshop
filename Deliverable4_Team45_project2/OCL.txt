@@ -1,0 +1,149 @@
+model PrintShop
+
+-- classes
+
+class Employee
+attributes
+  name : String
+  ID : Integer
+  depName : String
+  isManager : Boolean	
+end
+
+class PrintJob
+attributes
+  name : String
+  customerName : String
+  CREmployeeName : String
+  listOfItems: ArrayList
+end
+
+class Item
+attributes
+  name : String
+  ID : Integer
+  state : String
+  color : String
+  dimensions : Array
+  numOfPages : Integer
+end
+
+class Department
+attributes
+  depName : String
+  description : String
+  listOfEmployee : ArrayList
+end
+
+class Customer
+attributes
+  name : String
+  email : String
+  phoneNum : String
+  ID : Integer
+  state : String
+  memberShip : String
+end
+
+class WareHouse
+attributes
+  materialName : String
+  materialPrice : Float
+  materialQuantity : Integer
+end
+
+-- associations
+
+association consistsOf between
+  PrinJob[1]
+  Item[1..*]
+end
+
+association Places A between
+  Customer[1..*]
+  PrintJob[1..*]
+end
+
+association dealsWith between
+  Employee[1..*]
+  Customer[1..*]
+end
+
+association processes between
+  Employee[1..*]
+  Item[1..*]
+end
+
+association Has between
+  Department[1]
+  Employee[1..*]
+end
+
+association GetsInfoAbout between
+  Employee[1..*]
+  WareHouse[1]
+end
+
+
+-- OCL constraints
+
+constraints
+
+
+context Customer
+    -- the customer name must not equal null.
+  inv name:
+    self.name<>null
+
+context Customer
+    -- the customer id must not equal null.
+  inv id:
+    self.ID<>null
+
+context Customer
+    -- the customer phone number length must be less than 12 charachters.
+  inv phone:
+    self.phone.size()<12
+
+context Customer
+    -- the customer has to make at least one print job.
+  inv : self.places->size()>=1
+
+context Customer
+    -- the employee must be dealing with at least one customer.
+  inv : self.dealsWith->size()>=1
+
+
+context Item
+    -- the Item name must not equal null.
+  inv name:
+    self.name<>null
+
+context Item
+    -- the Item id must not equal null.
+  inv id:
+    self.ID<>null
+
+context Item
+    -- the Item number of pages must not be greater than 500 pages.
+  inv id:
+    self.numberOfPages<500
+
+context Employee
+    -- the Employee name must not equal null.
+  inv name:
+    self.name<>null
+
+context Employee
+    -- the Employee id must not equal null.
+  inv id:
+    self.ID<>null
+
+context Employee
+    -- the Employee must process at least one item and at most 10.
+  inv : self.processes->size()<100 and >=1
+
+context Department
+    -- the department must have at least one employee enrolled in that department.
+inv : self.has->size()>1 
+
